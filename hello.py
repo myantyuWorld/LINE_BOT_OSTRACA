@@ -1,5 +1,5 @@
 import os
-from flask import Flask
+from flask import Flask, request
 
 from linebot import (
     LineBotApi, WebhookHandler
