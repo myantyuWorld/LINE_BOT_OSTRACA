@@ -1,9 +1,14 @@
+certifi==2017.11.5        # via requests
+chardet==3.0.4            # via requests
+click==6.7                # via flask
+flask==0.12.2
+future==0.16.0            # via line-bot-sdk
+gunicorn==19.7.1
+idna==2.6                 # via requests
+itsdangerous==0.24        # via flask
+jinja2==2.10              # via flask
 line-bot-sdk==1.5.0
-future==0.16.0
-requests==2.14.2
-Flask== 0.12.2
-click==6.7
-itsdangerous==0.24
-Jinja2==2.9.6
-MarkupSafe==0.23
-Werkzeug==0.12.2
+markupsafe==1.0           # via jinja2
+requests==2.18.4
+urllib3==1.22             # via requests
+werkzeug==0.12.2          # via flask
