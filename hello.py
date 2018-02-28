@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
-# import urllib2
+import urllib2
 import datetime
 from bs4 import BeautifulSoup       # webスクレイピング用
 from flask import Flask, request    # Flask, JSON用  
