@@ -1,6 +1,10 @@
+# -*- coding: utf-8 -*-
 import os
-from flask import Flask, request
-
+import urllib2
+import datetime
+from bs4 import BeautifulSoup       # webスクレイピング用
+from flask import Flask, jsonify, request    # Flask, JSON用  
+from flask_cors import CORS         # CORS対策クロスオーバーリソースシェアリング
 from linebot import (
     LineBotApi, WebhookHandler
 )
@@ -12,6 +16,7 @@ from linebot.models import (
 )
 
 app = Flask(__name__)
+CORS(app) # <-追加
 
 line_bot_api = LineBotApi('F4UzKoSzxVVvwKJ2wqrIJnwAbJ5nVYI3o5YD7Lp5OfoQkpOAtSkPpN0OwRHXwG3SEnd7zwinxx7IPjLX99g5X96LlLTWW9mPnEtrkhvqD/tWmpf5oL/m+0WNZ4TTNBuU5rIapkUB3Xo1E5xmuywh7gdB04t89/1O/w1cDnyilFU=')
 handler = WebhookHandler('35a57e3c8b09c2ca733c8a2c0dd51ab0')
@@ -19,11 +24,6 @@ handler = WebhookHandler('35a57e3c8b09c2ca733c8a2c0dd51ab0')
 @app.route('/')
 def hello():
     name = "Hello World"
-    return name
-
-@app.route('/good')
-def good():
-    name = "Good"
     return name
 
 @app.route("/callback", methods=['POST'])
@@ -49,6 +49,42 @@ def handle_message(event):
     line_bot_api.reply_message(
         event.reply_token,
         TextSendMessage(text=event.message.text))
+
+# Beautifulsoup4を用いた時刻表の時刻抽出メソッド（共通）
+def bs4method(fileName):
+    soup = BeautifulSoup(open(fileName), "html.parser")
+    # 時／分の塊を取得する    
+    div = soup.find('div', class_='time-tables')
+    timetables = div.find_all('dl')
+    # 現在時刻を取得
+    now = "{0:%H}".format(datetime.datetime.now())
+    minute = "{0:%M}".format(datetime.datetime.now())
+    print "now hour --> " + now + " : " + minute #現在時刻
+    nowTimeTable =  timetables[int(now) - 6] # 現在の時間の時刻表
+
+    # その時間の時刻表を取得
+    timeframe = nowTimeTable.find_all('span', class_='time') 
+    minlist = [] 
+    for timeframe in timeframe:
+        # いまより後の時刻表を表示
+        if minute < timeframe.string: 
+            minlist.append(timeframe.string)
+    
+    # 分が45以降なら、次の時間の時刻表を検査する
+    if int(minute) >= 45:
+        now = int(now) + 1 # 時間を1時間すすめる
+        nowTimeTable = timetables[int(now) - 6]
+        timeframe = nowTimeTable.find_all('span', class_='time') 
+        for var in range(0,5):
+            minlist.append(timeframe[var].string)
+    
+    # JSONの形式
+    timetable = {
+        'hour': now,
+        'min' : minlist
+    }
+
+    return timetable
 
 
 if __name__ == "__main__":
