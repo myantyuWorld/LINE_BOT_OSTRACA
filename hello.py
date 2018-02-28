@@ -33,8 +33,7 @@ def callback():
 
     # get request body as text
     body = request.get_data(as_text=True)
-    app.logger.info("Request body: " + body)
-    print(body)
+    print body
     # handle webhook body
     try:
         handler.handle(body, signature)
@@ -51,40 +50,40 @@ def handle_message(event):
         TextSendMessage(text=event.message.text))
 
 # Beautifulsoup4を用いた時刻表の時刻抽出メソッド（共通）
-# def bs4method(fileName):
-#     soup = BeautifulSoup(open(fileName), "html.parser")
-#     # 時／分の塊を取得する    
-#     div = soup.find('div', class_='time-tables')
-#     timetables = div.find_all('dl')
-#     # 現在時刻を取得
-#     now = "{0:%H}".format(datetime.datetime.now())
-#     minute = "{0:%M}".format(datetime.datetime.now())
-#     print "now hour --> " + now + " : " + minute #現在時刻
-#     nowTimeTable =  timetables[int(now) - 6] # 現在の時間の時刻表
+def bs4method(fileName):
+    soup = BeautifulSoup(open(fileName), "html.parser")
+    # 時／分の塊を取得する    
+    div = soup.find('div', class_='time-tables')
+    timetables = div.find_all('dl')
+    # 現在時刻を取得
+    now = "{0:%H}".format(datetime.datetime.now())
+    minute = "{0:%M}".format(datetime.datetime.now())
+    print "now hour --> " + now + " : " + minute #現在時刻
+    nowTimeTable =  timetables[int(now) - 6] # 現在の時間の時刻表
 
-#     # その時間の時刻表を取得
-#     timeframe = nowTimeTable.find_all('span', class_='time') 
-#     minlist = [] 
-#     for timeframe in timeframe:
-#         # いまより後の時刻表を表示
-#         if minute < timeframe.string: 
-#             minlist.append(timeframe.string)
+    # その時間の時刻表を取得
+    timeframe = nowTimeTable.find_all('span', class_='time') 
+    minlist = [] 
+    for timeframe in timeframe:
+        # いまより後の時刻表を表示
+        if minute < timeframe.string: 
+            minlist.append(timeframe.string)
     
-#     # 分が45以降なら、次の時間の時刻表を検査する
-#     if int(minute) >= 45:
-#         now = int(now) + 1 # 時間を1時間すすめる
-#         nowTimeTable = timetables[int(now) - 6]
-#         timeframe = nowTimeTable.find_all('span', class_='time') 
-#         for var in range(0,5):
-#             minlist.append(timeframe[var].string)
+    # 分が45以降なら、次の時間の時刻表を検査する
+    if int(minute) >= 45:
+        now = int(now) + 1 # 時間を1時間すすめる
+        nowTimeTable = timetables[int(now) - 6]
+        timeframe = nowTimeTable.find_all('span', class_='time') 
+        for var in range(0,5):
+            minlist.append(timeframe[var].string)
     
-#     # JSONの形式
-#     timetable = {
-#         'hour': now,
-#         'min' : minlist
-#     }
+    # JSONの形式
+    timetable = {
+        'hour': now,
+        'min' : minlist
+    }
 
-#     return timetable
+    return timetable
 
 
 if __name__ == "__main__":

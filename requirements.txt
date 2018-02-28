@@ -7,7 +7,7 @@ future==0.16.0            # via line-bot-sdk
 gunicorn==19.7.1
 idna==2.6                 # via requests
 itsdangerous==0.24        # via flask
-jinja2==2.10              # via flask
+# jinja2==2.10              # via flask
 line-bot-sdk==1.5.0
 markupsafe==1.0           # via jinja2
 requests==2.18.4
