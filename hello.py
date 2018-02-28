@@ -3,7 +3,7 @@ import os
 # import urllib2
 import datetime
 from bs4 import BeautifulSoup       # webスクレイピング用
-from flask import Flask, jsonify, request    # Flask, JSON用  
+from flask import Flask, request    # Flask, JSON用  
 from flask_cors import CORS         # CORS対策クロスオーバーリソースシェアリング
 from linebot import (
     LineBotApi, WebhookHandler
